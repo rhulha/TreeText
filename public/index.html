@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TreeText</title>
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="bootstrap.min.css"> <!-- 3.3.7 -->
+  <link rel="stylesheet" href="jstree.style.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="jquery-3.3.1.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+  <script src="split.min.js"></script>
+  <script src="jstree.js"></script>
+</head>
+<body>
+
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX LEFT XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  <div id="mytree" class="split split-horizontal content">
+    <div id="jstree_div"></div>
+  </div>
+  
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MIDDLE XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  <div id="mylist" class="split split-horizontal content">
+    
+    <form id="editFolder">
+      <input type="hidden" name="folder_id">
+      <div class="flex-row" style="width: 100%">
+          <div class="flex-col size-shrink"><strong>Folder:</strong></div>
+          <div class="flex-col size-2"><input type="text" name="folder_text" style="width: 100%"></div>
+          <div class="flex-col size-1"><input type="text" name="folder_weight" style="width: 100%"></div>
+      </div>
+      
+    </form>
+
+    <form id="addNewTodo">
+      <input type="text" id="newTodo" name="newTodo" style="width: 100%" placeholder="New Todo...">
+    </form>
+    
+    <div id="list" class="split">
+      
+    </div>
+    
+  </div>
+  
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX RIGHT XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  <div id="mydetails" class="split split-horizontal content">
+
+    <form id="editTodo">
+      <input type="text" name="todoId" id="todoId" style="width: 100%">
+      <input type="text" name="todoText" id="todoText" style="width: 100%">
+      <input type="submit" name="todoChange" id="todoChange" style="width: 100%" value="Submit">
+      <input type="button" name="todoDelete" id="todoDelete" style="width: 100%" value="Delete">
+      
+    </form>
+    <br/>
+    <br/>
+    addChildFolder:
+    <form id="addChildFolder">
+      <input type="hidden" name="folder_id" style="width: 100%">
+      <input type="text" name="folder_text" style="width: 100%">
+    </form>
+  </div>
+  
+  <script>
+    Split(['#mytree', '#mylist', '#mydetails'], {
+      sizes: [10, 75, 15],
+      gutterSize: 8,
+      cursor: 'col-resize'
+    })
+  </script>
+  
+  <script type="module" src="main.js"></script>
+
+  </body>
+</html>

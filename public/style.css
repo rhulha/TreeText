@@ -1,0 +1,132 @@
+div.todo {
+  background: white;
+  margin-bottom:2px;
+  padding:8px;
+}
+
+html, body {
+    height: 100%;
+}
+body {
+  padding: 8px;
+  background-color: #3ea8a8;
+  box-sizing: border-box;
+}
+.split {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.content {
+  background-color: #fff;
+}
+.gutter {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+}
+.gutter.gutter-vertical {
+  cursor: row-resize;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+}
+.split.split-horizontal, .gutter.gutter-horizontal {
+  height: 100%;
+  float: left;
+}
+#addNewTodo{
+  background: rgba(0,0,0,0.2);
+  padding: 6px;
+}
+
+#addNewTodo input,
+#editFolder input{
+  background: none; 
+  border: none; 
+  color: white;
+}
+
+#addNewTodo,
+#editFolder{
+  color: white;
+}
+#mylist{
+  background: none;
+}
+
+#editFolder, 
+#addNewTodo{
+  margin-bottom: 8px;
+}
+
+.treeview .node-tree.node-selected,
+.treeview .node-tree.node-selected:hover{
+    background-color: #3ea8a8;
+} 
+
+::-webkit-input-placeholder { /* Edge */
+  color: rgba(255,255,255,.5);
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: rgba(255,255,255,.5);
+}
+
+::placeholder {
+  color: rgba(255,255,255,.5);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1f7272;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.flex-row{
+  display: flex;
+  margin: 0 -4px;
+}
+
+.flex-col{
+  flex 1;
+  margin: 0 4px;
+}
+
+.flex-col.size-shrink{
+  flex: none;
+}
+
+.flex-col.size-1{
+  flex: 1;
+}
+
+.flex-col.size-2{
+  flex: 2;
+}
+
+.flex-col.size-3{
+  flex: 3;
+}
+
+.flex-col.size-4{
+  flex: 4;
+}

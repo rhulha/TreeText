@@ -1,0 +1,26 @@
+{
+  "name": "TreeText",
+  "version": "0.0.1",
+  "description": "Tree based Todolist",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "pg": "^8.7.3"
+  },
+  "engines": {
+    "node": "16.12.0"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/treetext"
+  },
+  "license": "private",
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ]
+}
