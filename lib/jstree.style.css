@@ -13,7 +13,7 @@
 }
 .jstree-anchor {
   display: inline-block;
-  color: black;
+  color: white;
   white-space: nowrap;
   padding: 0 4px 0 1px;
   margin: 0;
@@ -28,7 +28,7 @@
 .jstree-anchor:hover,
 .jstree-anchor:active {
   text-decoration: none;
-  color: inherit;
+  color: white;
 }
 .jstree-icon {
   display: inline-block;
@@ -143,7 +143,7 @@
   padding: 0 2em 0 2em;
   text-decoration: none;
   width: auto;
-  color: black;
+  color: white;
   white-space: nowrap;
   line-height: 2.4em;
   text-shadow: 1px 1px 0 white;
@@ -310,7 +310,7 @@
   box-shadow: inset 0 0 1px #cccccc;
 }
 .jstree-default .jstree-clicked {
-  background: #beebff;
+  background: #0f2b3d;
   border-radius: 2px;
   box-shadow: inset 0 0 1px #999999;
 }
@@ -319,7 +319,7 @@
 }
 .jstree-default .jstree-disabled {
   background: transparent;
-  color: #666666;
+  color: #d1d1d1;
 }
 .jstree-default .jstree-disabled.jstree-hovered {
   background: transparent;
@@ -938,12 +938,12 @@
     height: 40px;
   }
   #jstree-dnd.jstree-dnd-responsive > .jstree-ok {
-    background-image: url("https://cdn.glitch.com/ff88f45e-7c60-4ad6-9c18-ffeb868eaed6%2F40px.png?v=1614751348658");
+    background-image: url("icons.png");
     background-position: 0 -200px;
     background-size: 120px 240px;
   }
   #jstree-dnd.jstree-dnd-responsive > .jstree-er {
-    background-image: url("https://cdn.glitch.com/ff88f45e-7c60-4ad6-9c18-ffeb868eaed6%2F40px.png?v=1614751348658");
+    background-image: url("icons.png");
     background-position: -40px -200px;
     background-size: 120px 240px;
   }
@@ -962,7 +962,7 @@
 	*/
   }
   .jstree-default-responsive .jstree-icon {
-    background-image: url("https://cdn.glitch.com/ff88f45e-7c60-4ad6-9c18-ffeb868eaed6%2F40px.png?v=1614751348658");
+    background-image: url("icons.png");
   }
   .jstree-default-responsive .jstree-node,
   .jstree-default-responsive .jstree-leaf > .jstree-ocl {
@@ -1066,7 +1066,7 @@
   .jstree-default-responsive .jstree-node > .jstree-ocl,
   .jstree-default-responsive .jstree-themeicon,
   .jstree-default-responsive .jstree-checkbox {
-    background-image: url("https://cdn.glitch.com/ff88f45e-7c60-4ad6-9c18-ffeb868eaed6%2F40px.png?v=1614751348658");
+    background-image: url("icons.png");
     background-size: 120px 240px;
   }
   .jstree-default-responsive .jstree-node {
@@ -1088,11 +1088,11 @@
     background-position: 0 0;
   }
   .jstree-default-responsive .jstree-file {
-    background: url("https://cdn.glitch.com/ff88f45e-7c60-4ad6-9c18-ffeb868eaed6%2F40px.png?v=1614751348658") 0 -160px no-repeat;
+    background: url("icons.png") 0 -160px no-repeat;
     background-size: 120px 240px;
   }
   .jstree-default-responsive .jstree-folder {
-    background: url("https://cdn.glitch.com/ff88f45e-7c60-4ad6-9c18-ffeb868eaed6%2F40px.png?v=1614751348658") -40px -40px no-repeat;
+    background: url("icons.png") -40px -40px no-repeat;
     background-size: 120px 240px;
   }
   .jstree-default-responsive > .jstree-container-ul > .jstree-node {

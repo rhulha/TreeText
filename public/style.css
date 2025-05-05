@@ -1,27 +1,21 @@
-div.todo {
-  background: white;
-  margin-bottom:2px;
-  padding:8px;
+html, body {
+  height: 100%;
 }
 
-html, body {
-    height: 100%;
-}
 body {
-  padding: 8px;
-  background-color: #3ea8a8;
-  box-sizing: border-box;
+padding: 8px;
+background-color: #101313;
+box-sizing: border-box;
 }
+
 .split {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
+-webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+        box-sizing: border-box;
+overflow-y: auto;
+overflow-x: hidden;
 }
-.content {
-  background-color: #fff;
-}
+
 .gutter {
   background-color: transparent;
   background-repeat: no-repeat;
@@ -38,6 +32,16 @@ body {
 .split.split-horizontal, .gutter.gutter-horizontal {
   height: 100%;
   float: left;
+}
+
+div.todo {
+  background: rgb(37, 36, 36);
+  margin-bottom:2px;
+  padding:8px;
+}
+
+.content {
+  background-color: rgb(37, 36, 36);
 }
 #addNewTodo{
   background: rgba(0,0,0,0.2);
@@ -107,7 +111,7 @@ body {
 }
 
 .flex-col{
-  flex 1;
+  flex: 1;
   margin: 0 4px;
 }
 
