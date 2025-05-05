@@ -115,9 +115,23 @@ app.put('/folder', function (request, response) {
 app.get("/jstree", (request, response) => {
   console.log(request.url);
   var parent = request.query.id;
-  var sql = "select id, text, true as children from todos where parent = $1"
+  console.log("parent is: " + parent);
+  var sql = `
+    select id, text, exists (
+      select 1 from todos as children where children.parent = todos.id
+    ) as children 
+    from todos 
+    where parent = $1
+  `;
   if (parent == "#") {
-    sql = "select id, text, true as children from todos where parent is null"
+    sql = `
+      select id, text, exists (
+        select 1 from todos as children where children.parent = todos.id
+      ) as children,
+      'root' as type
+      from todos 
+      where parent is null
+    `;
   }
 
   client.query(sql, parent == "#" ? [] : [parent], (err, res) => {
