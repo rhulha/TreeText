@@ -119,7 +119,7 @@
   margin: 0;
   padding: 2px;
   position: absolute;
-  background: #f5f5f5;
+  background: #302a2a;
   border: 1px solid #979797;
   box-shadow: 2px 2px 2px #999999;
 }
@@ -151,7 +151,7 @@
 }
 .vakata-context li > a:hover {
   position: relative;
-  background-color: #e8eff7;
+  background-color: #101a25;
   box-shadow: 0 0 2px #0a6aa1;
 }
 .vakata-context li > a.vakata-context-parent {
@@ -164,7 +164,7 @@
 }
 .vakata-context .vakata-context-hover > a {
   position: relative;
-  background-color: #e8eff7;
+  background-color: #21364d;
   box-shadow: 0 0 2px #0a6aa1;
 }
 .vakata-context .vakata-context-separator > a,

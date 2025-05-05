@@ -46,7 +46,7 @@ app.post('/todo', function (request, response) {
   let parent = request.body.parent;
   let text = request.body.text;
 
-  client.query('insert into todos (parent, weight, text, folder) values ($1, $2, $3, true) returning id', [parent, 1, text], (err, res) => {
+  client.query('insert into todos (parent, weight, text, folder) values ($1, $2, $3, false) returning id', [parent, 1, text], (err, res) => {
     if (err) {
       console.log(err);
     } else {

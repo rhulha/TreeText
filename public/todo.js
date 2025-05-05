@@ -7,6 +7,7 @@ $("#addNewTodoForm").submit(function(event) {
     console.log("after add new todo, data: ", data);
     var newTodo = $("<div class='todo' id='node-" + data.id + "'>" + $('#addNewTodoInput').val() + "</div>");
     var p = $("#list").prepend(newTodo);
+    $('#addNewTodoInput').val("");
     newTodo.click((e)=>{
      $("#todoId").val(e.currentTarget.id);
      $("#todoText").val(e.currentTarget.innerText);

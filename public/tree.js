@@ -30,13 +30,7 @@ let tree = $("#jstree_div").jstree({
   ]
 });
 
-//console.log('$.jstree.defaults.contextmenu.items');
-//console.log($.jstree.defaults.contextmenu.items);
-
-//$.jstree.defaults.contextmenu.items = $.jstree.defaults.contextmenu.items();
-//$.jstree.defaults.contextmenu.items.rename.shortcut = 113;  // F2 key
-
-
+setTimeout(function() {  tree.jstree("select_node", "1");}, 1000);
 
 
 $("#jstree_div").on("changed.jstree", function(e, data) {
