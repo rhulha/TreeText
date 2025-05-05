@@ -1,21 +1,32 @@
-var todo = new Object();
 
-todo.create = function(event) {
+$("#addNewTodo").submit(function(event) {
   event.preventDefault();
   console.log("folder", window.folder);
-  var posting = $.post("todo", {parent: window.folder, text: $('#newTodo').val()});
+  var posting = $.post("todo", {parent: window.folder, text: $('#addNewTodoInput').val()});
   posting.done(function(data) {
     console.log(data);
-    var newTodo = $("<div class='todo' id='node-" + data.id + "'>" + $('#newTodo').val() + "</div>");
+    var newTodo = $("<div class='todo' id='node-" + data.id + "'>" + $('#addNewTodoInput').val() + "</div>");
     var p = $("#list").prepend(newTodo);
     newTodo.click((e)=>{
      $("#todoId").val(e.currentTarget.id);
      $("#todoText").val(e.currentTarget.innerText);
     });
   });
-}
+});
 
-todo.update = function(event) {
+$("#todoDelete").click(function(event) {
+  event.preventDefault();
+  $.ajax({
+      url: 'todo',
+      type: 'DELETE',
+      data: {id: $('#todoId').val() },
+      success: function(result) {
+        $('#' + $('#todoId').val() ).remove();
+      }
+  });
+});
+
+let todoUpdate = function(event) {
   console.log("folder", window.folder);
   event.preventDefault();
   $.ajax({
@@ -29,17 +40,11 @@ todo.update = function(event) {
   });
 }
 
-todo.delete = function(event) {
-  event.preventDefault();
-  $.ajax({
-      url: 'todo',
-      type: 'DELETE',
-      data: {id: $('#todoId').val() },
-      success: function(result) {
-        $('#' + $('#todoId').val() ).remove();
-      }
-  });
-}
+$("#editTodo").submit(todoUpdate);
 
+$("#editTodo").on('keydown', function(e) {
+  if(e.keyCode == 13) {
+    todoUpdate(e);
+  }
+});
 
-export default todo;

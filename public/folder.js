@@ -1,5 +1,16 @@
 var folder = new Object();
 
+$("#addChildFolder").submit(folder.addChild);
+
+$("#editFolder").submit(folder.update);
+
+$("#editFolder").on('keydown', function(e) {
+  if(e.keyCode == 13) {
+    folder.update(e);
+  }
+});
+
+
 folder.update = function(event) {
   event.preventDefault();
   console.log("folder: " + window.folder);

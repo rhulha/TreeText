@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="jquery-3.3.1.min.js"></script>
   <script src="bootstrap.min.js"></script>
-  <script src="split.min.js"></script>
+  <script src="split.js"></script>
   <script src="jstree.js"></script>
 </head>
 <body>
@@ -31,8 +31,8 @@
       
     </form>
 
-    <form id="addNewTodo">
-      <input type="text" id="newTodo" name="newTodo" style="width: 100%" placeholder="New Todo...">
+    <form id="addNewTodoForm">
+      <input type="text" id="addNewTodoInput" name="addNewTodoInput" style="width: 100%" placeholder="New Todo...">
     </form>
     
     <div id="list" class="split">
@@ -45,8 +45,8 @@
   <div id="mydetails" class="split split-horizontal content">
 
     <form id="editTodo">
-      <input type="text" name="todoId" id="todoId" style="width: 100%">
-      <input type="text" name="todoText" id="todoText" style="width: 100%">
+      <input type="text" name="todoId" id="todoId" style="width: 100%" placeholder="todoId">
+      <input type="text" name="todoText" id="todoText" style="width: 100%" placeholder="todoText">
       <input type="submit" name="todoChange" id="todoChange" style="width: 100%" value="Submit">
       <input type="button" name="todoDelete" id="todoDelete" style="width: 100%" value="Delete">
       
@@ -56,7 +56,7 @@
     addChildFolder:
     <form id="addChildFolder">
       <input type="hidden" name="folder_id" style="width: 100%">
-      <input type="text" name="folder_text" style="width: 100%">
+      <input type="text" name="folder_text" style="width: 100%" placeholder="folder_text">
     </form>
   </div>
   
@@ -68,7 +68,9 @@
     })
   </script>
   
-  <script type="module" src="main.js"></script>
+  <script type="module" src="tree.js"></script>
+  <script type="module" src="todo.js"></script>
+  <script type="module" src="folder.js"></script>
 
   </body>
 </html>
