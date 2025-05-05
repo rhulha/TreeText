@@ -25,9 +25,9 @@ function addNode(parent, rows) {
   }
 }
 
-app.get('/todos/:id', function (request, response) {
-  var id = request.params.id;
-  client.query('SELECT id, weight, text FROM todos where parent = $1', [id], (err, res) => {
+app.get('/todos/:parent_id', function (request, response) {
+  var parent_id = request.params.parent_id;
+  client.query('SELECT id, weight, text FROM todos where parent = $1 and folder = false', [parent_id], (err, res) => {
     if (err) {
       console.log(err);
     } else {
