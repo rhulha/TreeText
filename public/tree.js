@@ -19,22 +19,25 @@ let tree = $("#jstree_div").jstree({
     data: {
       url: "/jstree",
       data: function(node) {
-        console.log("jstree data callback", node);
+        //console.log("jstree data callback", node);
         return { id: node.id == '#' ? '#' : node.original.id }; // This is called before the url is used to call the server. The result of this function seems to be the payload
         // Essentially this method makes the payload consist of only the id...
       }
     }
   },
   "plugins" : [
-    "contextmenu", "dnd", "search" //, "state"
+    "contextmenu", "dnd" // , "search" //, "state"
   ]
 });
 
-setTimeout(function() {  tree.jstree("select_node", "1");}, 1000);
-
+$("#jstree_div").on("loaded.jstree", function(e, data) {
+  data.instance.open_node("1");
+  setTimeout(function() { tree.jstree("select_node", "1"); }, 200);
+  
+});
 
 $("#jstree_div").on("changed.jstree", function(e, data) {
-  console.log(data);
+  //console.log(data);
   //var id = data.selected[0];
   var id = data.node.id;
   window.selectedFolder = id;
@@ -59,7 +62,5 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
 
   //fetch("/board?id="+id).then(d => d.json()).then(rows => {
 });
-
-
 
 

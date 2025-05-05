@@ -26,6 +26,7 @@ function addNode(parent, rows) {
 }
 
 app.get('/todos/:parent_id', function (request, response) {
+  console.log('get todos for parent_id: ' + request.params.parent_id);
   var parent_id = request.params.parent_id;
   client.query('SELECT id, weight, text FROM todos where parent = $1 and folder = false', [parent_id], (err, res) => {
     if (err) {
@@ -117,9 +118,9 @@ app.put('/folder', function (request, response) {
 });
 
 app.get("/jstree", (request, response) => {
-  console.log(request.url);
+  console.log("get ", request.url);
   var parent = request.query.id;
-  console.log("parent is: " + parent);
+  //console.log("parent is: " + parent);
   var sql = `
     select id, text, exists (
       select 1 from todos as children where children.parent = todos.id and folder = true
