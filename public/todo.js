@@ -1,10 +1,10 @@
 
-$("#addNewTodo").submit(function(event) {
+$("#addNewTodoForm").submit(function(event) {
   event.preventDefault();
-  console.log("folder", window.folder);
-  var posting = $.post("todo", {parent: window.folder, text: $('#addNewTodoInput').val()});
+  console.log("add new todo, selected folder: ", window.selectedFolder);
+  var posting = $.post("todo", {parent: window.selectedFolder, text: $('#addNewTodoInput').val()});
   posting.done(function(data) {
-    console.log(data);
+    console.log("after add new todo, data: ", data);
     var newTodo = $("<div class='todo' id='node-" + data.id + "'>" + $('#addNewTodoInput').val() + "</div>");
     var p = $("#list").prepend(newTodo);
     newTodo.click((e)=>{
@@ -27,13 +27,13 @@ $("#todoDelete").click(function(event) {
 });
 
 let todoUpdate = function(event) {
-  console.log("folder", window.folder);
+  console.log("folder", window.selectedFolder);
   event.preventDefault();
   $.ajax({
       url: 'todo',
       type: 'PUT',
       //contentType: 'application/json',
-      data: {parent: window.folder, id: $('#todoId').val(), text: $('#todoText').val() },
+      data: {parent: window.selectedFolder, id: $('#todoId').val(), text: $('#todoText').val() },
       success: function(result) {
         $('#' + $('#todoId').val() ).text($('#todoText').val());
       }

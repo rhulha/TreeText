@@ -41,8 +41,12 @@ app.get('/todos/:id', function (request, response) {
 });
 
 app.post('/todo', function (request, response) {
+  console.log('create todo');
   console.log(request.body);
-  client.query('insert into todos (parent, weight, text) values ($1, $2, $3) returning id', [request.body.parent, 1, request.body.text], (err, res) => {
+  let parent = request.body.parent;
+  let text = request.body.text;
+
+  client.query('insert into todos (parent, weight, text, folder) values ($1, $2, $3, true) returning id', [parent, 1, text], (err, res) => {
     if (err) {
       console.log(err);
     } else {
@@ -118,15 +122,15 @@ app.get("/jstree", (request, response) => {
   console.log("parent is: " + parent);
   var sql = `
     select id, text, exists (
-      select 1 from todos as children where children.parent = todos.id
+      select 1 from todos as children where children.parent = todos.id and folder = true
     ) as children 
     from todos 
-    where parent = $1
+    where folder = true and parent = $1
   `;
   if (parent == "#") {
     sql = `
       select id, text, exists (
-        select 1 from todos as children where children.parent = todos.id
+        select 1 from todos as children where children.parent = todos.id and folder = true
       ) as children,
       'root' as type
       from todos 

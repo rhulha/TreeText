@@ -43,7 +43,7 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
   console.log(data);
   //var id = data.selected[0];
   var id = data.node.id;
-  window.folder = id;
+  window.selectedFolder = id;
   $("#editFolder input[name=folder_id]").val(data.node.id);
   $("#editFolder input[name=folder_text]").val(data.node.text);
   $("#editFolder input[name=folder_weight]").val(data.node.weight);
