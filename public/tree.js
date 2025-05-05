@@ -2,9 +2,22 @@
 function treeChangeCallback(operation, node, node_parent, node_position, more) {
   // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
   // in case of 'rename_node' node_position is filled with the new node name
-  console.log("treeChangeCallback", operation, node, node_parent, node_position, more);
   if (operation === 'edit' ) {
     console.log("edit node", node, node_parent, node_position, more);
+  } else if (operation === 'delete_node' ) {
+    console.log("delete_node", node, node_parent, node_position, more);
+    $.ajax({
+      url: "/folder/" + node.id,
+      type: "DELETE",
+      success: function(data) {
+        console.log("Folder deleted successfully", data);
+      },
+      error: function(xhr, status, error) {
+        console.error("Error deleting folder:", error);
+      }
+    });
+  } else {
+    console.log("treeChangeCallback", operation, node, node_parent, node_position, more);
   }
 
   return true;

@@ -68,9 +68,23 @@ app.put('/todo', function (request, response) {
   });
 });
 
-app.delete('/todo', function (request, response) {
-  console.log(request.body);
-  client.query('delete from todos where id = $1', [request.body.id.substring(5)], (err, res) => {
+app.delete('/todo/:id', function (request, response) {
+  console.log('delete todo for id: ' + request.params.id);
+  var id = request.params.id;
+  client.query('delete from todos where id = $1 and folder = false', [id], (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+      response.send("ok");
+    }
+  });
+});
+
+app.delete('/folder/:id', function (request, response) {
+  console.log('delete folder for id: ' + request.params.id);
+  var id = request.params.id;
+  // TODO: think about deleteing all children as well
+  client.query('delete from todos where id = $1 and folder = true', [id], (err, res) => {
     if (err) {
       console.log(err);
     } else {
@@ -127,6 +141,7 @@ app.get("/jstree", (request, response) => {
     ) as children 
     from todos 
     where folder = true and parent = $1
+    order by weight
   `;
   if (parent == "#") {
     sql = `
@@ -135,7 +150,8 @@ app.get("/jstree", (request, response) => {
       ) as children,
       'root' as type
       from todos 
-      where parent is null
+      where folder = true and parent is null
+      order by weight
     `;
   }
 
