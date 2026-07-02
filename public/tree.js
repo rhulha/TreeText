@@ -76,4 +76,19 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
   //fetch("/board?id="+id).then(d => d.json()).then(rows => {
 });
 
+$("#addNewFolderForm").submit(function(e) {
+  e.preventDefault();
+  var text = $("#addNewFolderInput").val().trim();
+  if (!text) return;
+  var parent = window.selectedFolder || null;
+  $.post("/folder", { parent: parent, text: text }).done(function() {
+    $("#addNewFolderInput").val("");
+    if (parent) {
+      tree.jstree("refresh_node", parent);
+    } else {
+      tree.jstree("refresh");
+    }
+  });
+});
+
 

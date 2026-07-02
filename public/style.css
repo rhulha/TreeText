@@ -39,7 +39,8 @@ body {
   float: left;
 }
 
-#addNewTodoInput {
+#addNewTodoInput,
+#addNewFolderInput {
   background: rgb(37, 36, 36);
   border: none;
   color: white;

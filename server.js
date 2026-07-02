@@ -82,7 +82,7 @@ app.get('/folder', function (request, response) {
 
 app.post('/folder', function (request, response) {
   console.log(request.body);
-  db.createFolder(request.body.parent, request.body.text).then(() => {
+  db.createFolder(request.body.parent || null, request.body.text).then(() => {
     response.send("ok");
   }).catch((err) => console.log(err));
 });
