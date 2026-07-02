@@ -1,9 +1,13 @@
 const Database = require('better-sqlite3');
+const fs = require('fs');
+const path = require('path');
 
 let db;
 
 function connect() {
-  db = new Database(process.env.SQLITE_FILE || 'treetext.db');
+  const file = process.env.SQLITE_FILE || path.join(__dirname, '..', 'instance', 'treetext.db');
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  db = new Database(file);
   db.pragma('journal_mode = WAL');
   db.exec(`
     CREATE TABLE IF NOT EXISTS todos (
