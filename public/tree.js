@@ -1,3 +1,4 @@
+import { renderTodoItem } from "./todo.js";
 
 function treeChangeCallback(operation, node, node_parent, node_position, more) {
   // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
@@ -58,19 +59,11 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
   $("#editFolder input[name=folder_text]").val(data.node.text);
   $("#editFolder input[name=folder_weight]").val(data.node.weight);
   $.getJSON("todos/" + data.node.id, function(data) {
-    var items = [];
+    var $newList = $("<div/>", { id: "list", class: "split" });
     $.each(data, function(key, node) {
-      items.push(
-        "<div class='todo' id='node-" + node.id + "'>" + node.text + "</div>"
-      );
+      $newList.append(renderTodoItem(node));
     });
-    $("#list").replaceWith(
-      $("<div/>", { id: "list", class: "split", html: items.join("") })
-    );
-    $(".todo").click(e => {
-      $("#todoId").val(e.currentTarget.id);
-      $("#todoText").val(e.currentTarget.innerText);
-    });
+    $("#list").replaceWith($newList);
   });
 
   //fetch("/board?id="+id).then(d => d.json()).then(rows => {

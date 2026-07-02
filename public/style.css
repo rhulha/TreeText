@@ -53,6 +53,67 @@ div.todo {
   height: 40px;
   color: white;
   border-radius: 8px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.todo-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-rename-input {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, .5);
+  color: white;
+  font: inherit;
+}
+
+.todo-menu-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 6px;
+  margin-left: 8px;
+}
+
+.todo-menu-btn:hover {
+  color: rgba(255, 255, 255, .7);
+}
+
+.todo-menu {
+  display: none;
+  position: fixed;
+  background: rgb(50, 49, 49);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
+  z-index: 1000;
+  min-width: 100px;
+  overflow: hidden;
+}
+
+.todo-menu.open {
+  display: block;
+}
+
+.todo-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: white;
+}
+
+.todo-menu-item:hover {
+  background: rgba(255, 255, 255, .1);
 }
 
 .content {
