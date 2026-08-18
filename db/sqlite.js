@@ -57,14 +57,27 @@ function updateTodo(id, parent, text) {
   return Promise.resolve();
 }
 
-function deleteTodo(id) {
-  db.prepare('delete from todos where id = ? and folder = 0').run(id);
+// Deleting a row without its descendants would leave them pointing at a parent that no
+// longer exists, which hides them from the UI forever, so delete the whole subtree.
+function deleteSubtree(id, folder) {
+  const sql = `
+    WITH RECURSIVE descendants(id) AS (
+      SELECT id FROM todos WHERE id = ? AND folder = ?
+      UNION ALL
+      SELECT t.id FROM todos t INNER JOIN descendants d ON t.parent = d.id
+    )
+    DELETE FROM todos WHERE id IN (SELECT id FROM descendants)
+  `;
+  db.prepare(sql).run(id, folder);
   return Promise.resolve();
 }
 
+function deleteTodo(id) {
+  return deleteSubtree(id, 0);
+}
+
 function deleteFolder(id) {
-  db.prepare('delete from todos where id = ? and folder = 1').run(id);
-  return Promise.resolve();
+  return deleteSubtree(id, 1);
 }
 
 function getFolderTree() {
@@ -82,6 +95,18 @@ function getFolderTree() {
 
 function createFolder(parent, text) {
   db.prepare('insert into todos (parent, weight, text, folder) values (?, ?, ?, 1)').run(parent, 1, text);
+  return Promise.resolve();
+}
+
+// jstree orders siblings by weight, so persisting a move means storing the new parent
+// plus the new ordering of every sibling in the target folder.
+function moveFolder(id, parent, siblings) {
+  const move = db.prepare('update todos set parent = ? where id = ? and folder = 1');
+  const reweigh = db.prepare('update todos set weight = ? where id = ?');
+  db.transaction(() => {
+    move.run(parent, id);
+    siblings.forEach((siblingId, i) => reweigh.run(i, siblingId));
+  })();
   return Promise.resolve();
 }
 
@@ -139,6 +164,7 @@ module.exports = {
   getFolderTree,
   createFolder,
   updateFolder,
+  moveFolder,
   getJsTreeRoots,
   getJsTreeChildren,
 };
