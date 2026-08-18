@@ -78,6 +78,32 @@ div.todo {
   box-sizing: border-box;
 }
 
+.todo-grip {
+  color: rgba(255, 255, 255, .35);
+  cursor: grab;
+  padding: 0 8px 0 2px;
+  font-size: 16px;
+  line-height: 1;
+  user-select: none;
+}
+
+.todo-grip:hover {
+  color: rgba(255, 255, 255, .7);
+}
+
+.todo-grip:active {
+  cursor: grabbing;
+}
+
+.todo-dragging {
+  opacity: .5;
+}
+
+.jstree-default .jstree-anchor.todo-drop-target {
+  background: rgba(62, 168, 168, .35);
+  box-shadow: inset 0 0 0 1px #3ea8a8;
+}
+
 .todo-text {
   flex: 1;
   overflow: hidden;

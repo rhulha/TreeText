@@ -1,5 +1,6 @@
 export function renderTodoItem(node) {
   var $todo = $("<div class='todo'></div>").attr("id", "node-" + node.id);
+  var $grip = $("<span class='todo-grip' draggable='true' title='Drag to a folder'>⠿</span>");
   var $text = $("<span class='todo-text'></span>").text(node.text);
   var $menuBtn = $("<button type='button' class='todo-menu-btn'>&#8942;</button>");
   var $menu = $("<div class='todo-menu'></div>");
@@ -7,8 +8,21 @@ export function renderTodoItem(node) {
   var $delete = $("<div class='todo-menu-item'>Delete</div>");
 
   $menu.append($rename, $delete);
-  $todo.append($text, $menuBtn);
+  $todo.append($grip, $text, $menuBtn);
+  $todo.data("menu", $menu);
   $("body").append($menu);
+
+  $grip.on("dragstart", function(e) {
+    var ev = e.originalEvent;
+    ev.dataTransfer.effectAllowed = "move";
+    ev.dataTransfer.setData("text/plain", $todo.attr("id"));
+    ev.dataTransfer.setDragImage($todo[0], 10, 20);
+    $todo.addClass("todo-dragging");
+  });
+
+  $grip.on("dragend", function() {
+    $todo.removeClass("todo-dragging");
+  });
 
   $todo.click(function() {
     $("#todoId").val($todo.attr("id"));
@@ -95,6 +109,39 @@ function deleteTodoItem($todo, $menu) {
     }
   });
 }
+
+function moveTodoToFolder(todoId, folderId) {
+  var $todo = $("#" + todoId);
+  $.ajax({
+    url: "todo",
+    type: "PUT",
+    data: { parent: folderId, id: todoId, text: $todo.find(".todo-text").text() },
+    success: function() {
+      $todo.data("menu").remove();
+      $todo.remove();
+    }
+  });
+}
+
+$("#jstree_div").on("dragover", ".jstree-anchor", function(e) {
+  e.preventDefault();
+  e.originalEvent.dataTransfer.dropEffect = "move";
+  $("#jstree_div .todo-drop-target").not(this).removeClass("todo-drop-target");
+  $(this).addClass("todo-drop-target");
+});
+
+$("#jstree_div").on("dragleave drop", function() {
+  $("#jstree_div .todo-drop-target").removeClass("todo-drop-target");
+});
+
+$("#jstree_div").on("drop", ".jstree-anchor", function(e) {
+  e.preventDefault();
+  var todoId = e.originalEvent.dataTransfer.getData("text/plain");
+  var folderId = $(this).closest("li").attr("id");
+  if (todoId && folderId && folderId !== window.selectedFolder) {
+    moveTodoToFolder(todoId, folderId);
+  }
+});
 
 $(document).click(closeAllMenus);
 $(window).on("resize", closeAllMenus);
