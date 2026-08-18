@@ -88,6 +88,22 @@ $("#jstree_div").on("rename_node.jstree", function(e, data) {
   });
 });
 
+// The dnd plugin only moves the node client side, so without this the folder would snap
+// back to its old place on the next load. jstree orders siblings by weight, so the whole
+// sibling order of the target folder goes along with the new parent.
+$("#jstree_div").on("move_node.jstree", function(e, data) {
+  var parent = data.parent === "#" ? null : data.parent;
+  var siblings = tree.jstree(true).get_node(data.parent).children;
+  $.ajax({
+    url: "/folder/" + data.node.id + "/move",
+    type: "PUT",
+    data: { parent: parent, siblings: siblings },
+    error: function(xhr, status, error) {
+      console.error("Error moving folder:", error);
+    }
+  });
+});
+
 $("#addNewFolderForm").submit(function(e) {
   e.preventDefault();
   var text = $("#addNewFolderInput").val().trim();

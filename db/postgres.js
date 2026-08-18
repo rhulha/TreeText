@@ -12,7 +12,7 @@ function connect() {
 }
 
 function getTodo(id) {
-  return client
+  return pool
     .query('SELECT id, parent, text, notes FROM todos where id = $1', [id])
     .then((res) => res.rows[0]);
 }
@@ -22,13 +22,13 @@ function updateTodoNotes(id, notes) {
 }
 
 function getTodos(parentId) {
-  return client
+  return pool
     .query('SELECT id, weight, text FROM todos where parent = $1 and folder = false', [parentId])
     .then((res) => res.rows);
 }
 
 function createTodo(parent, text) {
-  return client
+  return pool
     .query('insert into todos (parent, weight, text, folder) values ($1, $2, $3, false) returning id', [parent, 1, text])
     .then((res) => res.rows[0]);
 }

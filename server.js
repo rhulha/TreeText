@@ -1,7 +1,10 @@
 require('dotenv').config()
 
 const db = require('./db');
-db.connect();
+db.connect().catch((err) => {
+  console.error('could not initialise the database', err);
+  process.exit(1);
+});
 
 var express = require('express');
 var app = express();
@@ -9,6 +12,17 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('lib'));
 app.use(express.static('public'));
+
+// Without this every rejected promise below would leave the request hanging until the
+// client timed out, because the handler returned without ever writing a response.
+function fail(response) {
+  return (err) => {
+    console.error(err);
+    if (!response.headersSent) {
+      response.status(500).json({ error: 'internal server error' });
+    }
+  };
+}
 
 function addNode(parent, rows) {
   while (rows.i < rows.length && parent.id == rows[rows.i].parent) {
@@ -32,19 +46,19 @@ app.get('/todos/:parent_id', function (request, response) {
     rows.i = 0;
     addNode(node, rows);
     response.json(node.nodes);
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.get('/todo/:id', function (request, response) {
   db.getTodo(request.params.id).then((row) => {
     response.json(row);
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.put('/todo/:id/notes', function (request, response) {
   db.updateTodoNotes(request.params.id, request.body.notes).then(() => {
     response.send("ok");
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.post('/todo', function (request, response) {
@@ -56,14 +70,14 @@ app.post('/todo', function (request, response) {
   db.createTodo(parent, text).then((row) => {
     console.log(row);
     response.json(row);
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.put('/todo', function (request, response) {
   console.log(request.body);
   db.updateTodo(request.body.id.substring(5), request.body.parent, request.body.text).then(() => {
     response.send("ok");
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.delete('/todo/:id', function (request, response) {
@@ -71,7 +85,7 @@ app.delete('/todo/:id', function (request, response) {
   var id = request.params.id;
   db.deleteTodo(id).then(() => {
     response.send("ok");
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.delete('/folder/:id', function (request, response) {
@@ -80,7 +94,7 @@ app.delete('/folder/:id', function (request, response) {
   // TODO: think about deleteing all children as well
   db.deleteFolder(id).then(() => {
     response.send("ok");
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.get('/folder', function (request, response) {
@@ -89,14 +103,14 @@ app.get('/folder', function (request, response) {
     rows.i = 0;
     addNode(node, rows);
     response.json(node.nodes);
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.post('/folder', function (request, response) {
   console.log(request.body);
   db.createFolder(request.body.parent || null, request.body.text).then(() => {
     response.send("ok");
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 app.put('/folder', function (request, response) {
@@ -104,7 +118,14 @@ app.put('/folder', function (request, response) {
   console.log(request.body);
   db.updateFolder(request.body.text, request.body.weight, request.body.folder).then(() => {
     response.send("ok");
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
+});
+
+app.put('/folder/:id/move', function (request, response) {
+  var siblings = [].concat(request.body.siblings || []).filter((id) => /^\d+$/.test(id));
+  db.moveFolder(request.params.id, request.body.parent || null, siblings).then(() => {
+    response.send("ok");
+  }).catch(fail(response));
 });
 
 app.get("/jstree", (request, response) => {
@@ -113,7 +134,7 @@ app.get("/jstree", (request, response) => {
   var promise = parent == "#" ? db.getJsTreeRoots() : db.getJsTreeChildren(parent);
   promise.then((rows) => {
     response.json(rows);
-  }).catch((err) => console.log(err));
+  }).catch(fail(response));
 });
 
 var listener = app.listen(process.env.PORT, function () {
