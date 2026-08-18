@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 # better-sqlite3 needs to compile a native addon
 RUN apk add --no-cache python3 make g++
