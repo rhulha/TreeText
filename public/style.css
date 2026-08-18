@@ -164,34 +164,8 @@ div.todo {
   background-color: rgb(37, 36, 36);
 }
 
-#addNewTodo {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 6px;
-}
-
-#editFolder input {
-  background: none;
-  border: none;
-  color: white;
-}
-
-#addNewTodo,
-#editFolder {
-  color: white;
-}
-
 #mylist {
   background: none;
-}
-
-#editFolder,
-#addNewTodo {
-  margin-bottom: 8px;
-}
-
-.treeview .node-tree.node-selected,
-.treeview .node-tree.node-selected:hover {
-  background-color: #3ea8a8;
 }
 
 ::placeholder {

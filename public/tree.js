@@ -56,9 +56,6 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
   //var id = data.selected[0];
   var id = data.node.id;
   window.selectedFolder = id;
-  $("#editFolder input[name=folder_id]").val(data.node.id);
-  $("#editFolder input[name=folder_text]").val(data.node.text);
-  $("#editFolder input[name=folder_weight]").val(data.node.weight);
   clearSelection();
   $.getJSON("todos/" + data.node.id, function(data) {
     var $newList = $("<div/>", { id: "list", class: "split" });
