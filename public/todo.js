@@ -1,3 +1,5 @@
+import { selectTodo, setSelectedTitle, clearSelection, isSelected } from "./details.js";
+
 export function renderTodoItem(node) {
   var $todo = $("<div class='todo'></div>").attr("id", "node-" + node.id);
   var $grip = $("<span class='todo-grip' draggable='true' title='Drag to a folder'>⠿</span>");
@@ -27,6 +29,9 @@ export function renderTodoItem(node) {
   $todo.click(function() {
     $("#todoId").val($todo.attr("id"));
     $("#todoText").val($text.text());
+    $(".todo.selected").removeClass("selected");
+    $todo.addClass("selected");
+    selectTodo($todo.attr("id").substring(5), $text.text());
   });
 
   $menuBtn.click(function(e) {
@@ -78,6 +83,9 @@ function startRename($todo, $text) {
         data: { parent: window.selectedFolder, id: $todo.attr("id"), text: newText },
         success: function() {
           $text.text(newText);
+          if (isSelected($todo.attr("id").substring(5))) {
+            setSelectedTitle(newText);
+          }
         }
       });
     }
@@ -104,6 +112,9 @@ function deleteTodoItem($todo, $menu) {
     url: "todo/" + $todo.attr("id").substring(5),
     type: "DELETE",
     success: function() {
+      if (isSelected($todo.attr("id").substring(5))) {
+        clearSelection();
+      }
       $todo.remove();
       $menu.remove();
     }
@@ -117,6 +128,9 @@ function moveTodoToFolder(todoId, folderId) {
     type: "PUT",
     data: { parent: folderId, id: todoId, text: $todo.find(".todo-text").text() },
     success: function() {
+      if (isSelected(todoId.substring(5))) {
+        clearSelection();
+      }
       $todo.data("menu").remove();
       $todo.remove();
     }

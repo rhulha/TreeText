@@ -16,6 +16,7 @@ function connect() {
       folder INTEGER DEFAULT 0,
       weight INTEGER,
       text TEXT,
+      notes TEXT,
       starred INTEGER DEFAULT 0,
       due TIMESTAMP,
       remindme TIMESTAMP,
@@ -24,6 +25,20 @@ function connect() {
       modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
+  const columns = db.prepare('PRAGMA table_info(todos)').all();
+  if (!columns.some((c) => c.name === 'notes')) {
+    db.exec('ALTER TABLE todos ADD COLUMN notes TEXT');
+  }
+  return Promise.resolve();
+}
+
+function getTodo(id) {
+  const row = db.prepare('SELECT id, parent, text, notes FROM todos where id = ?').get(id);
+  return Promise.resolve(row);
+}
+
+function updateTodoNotes(id, notes) {
+  db.prepare('update todos set notes = ? where id = ?').run(notes, id);
   return Promise.resolve();
 }
 
@@ -115,6 +130,8 @@ function getJsTreeChildren(parentId) {
 module.exports = {
   connect,
   getTodos,
+  getTodo,
+  updateTodoNotes,
   createTodo,
   updateTodo,
   deleteTodo,

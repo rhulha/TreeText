@@ -3,7 +3,19 @@ const { Client } = require('pg');
 const client = new Client();
 
 function connect() {
-  return client.connect();
+  return client
+    .connect()
+    .then(() => client.query('ALTER TABLE todos ADD COLUMN IF NOT EXISTS notes TEXT'));
+}
+
+function getTodo(id) {
+  return client
+    .query('SELECT id, parent, text, notes FROM todos where id = $1', [id])
+    .then((res) => res.rows[0]);
+}
+
+function updateTodoNotes(id, notes) {
+  return client.query('update todos set notes = $2 where id = $1', [id, notes]);
 }
 
 function getTodos(parentId) {
@@ -77,6 +89,8 @@ function getJsTreeChildren(parentId) {
 module.exports = {
   connect,
   getTodos,
+  getTodo,
+  updateTodoNotes,
   createTodo,
   updateTodo,
   deleteTodo,

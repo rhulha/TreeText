@@ -46,13 +46,22 @@
       <input type="button" name="todoDelete" id="todoDelete" style="width: 100%" value="Delete">
       
     </form>
-    <br/>
-    <br/>
-    addChildFolder:
-    <form id="addChildFolder">
-      <input type="hidden" name="folder_id" style="width: 100%">
-      <input type="text" name="folder_text" style="width: 100%" placeholder="folder_text">
-    </form>
+    <div id="todoDetails">
+      <h4 id="detailsTitle">No todo selected</h4>
+
+      <div class="details-section">
+        <div class="details-label">Subitems</div>
+        <form id="addSubitemForm">
+          <input type="text" id="addSubitemInput" placeholder="New subitem...">
+        </form>
+        <div id="subitemList"></div>
+      </div>
+
+      <div class="details-section">
+        <div class="details-label">Notes</div>
+        <textarea id="todoNotes" placeholder="Notes..."></textarea>
+      </div>
+    </div>
   </div>
   
   <script>

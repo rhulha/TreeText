@@ -35,6 +35,18 @@ app.get('/todos/:parent_id', function (request, response) {
   }).catch((err) => console.log(err));
 });
 
+app.get('/todo/:id', function (request, response) {
+  db.getTodo(request.params.id).then((row) => {
+    response.json(row);
+  }).catch((err) => console.log(err));
+});
+
+app.put('/todo/:id/notes', function (request, response) {
+  db.updateTodoNotes(request.params.id, request.body.notes).then(() => {
+    response.send("ok");
+  }).catch((err) => console.log(err));
+});
+
 app.post('/todo', function (request, response) {
   console.log('create todo');
   console.log(request.body);

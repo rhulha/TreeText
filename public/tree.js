@@ -1,4 +1,5 @@
 import { renderTodoItem } from "./todo.js";
+import { clearSelection } from "./details.js";
 
 function treeChangeCallback(operation, node, node_parent, node_position, more) {
   // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
@@ -58,6 +59,7 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
   $("#editFolder input[name=folder_id]").val(data.node.id);
   $("#editFolder input[name=folder_text]").val(data.node.text);
   $("#editFolder input[name=folder_weight]").val(data.node.weight);
+  clearSelection();
   $.getJSON("todos/" + data.node.id, function(data) {
     var $newList = $("<div/>", { id: "list", class: "split" });
     $.each(data, function(key, node) {
