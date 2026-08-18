@@ -79,6 +79,12 @@ function updateFolder(text, weight, id) {
   return Promise.resolve();
 }
 
+// sqlite has no boolean type, so `exists(...)` comes back as 0/1. jstree only draws the
+// open/close arrow for a lazily loaded node when children is strictly === true.
+function toJsTreeNode(row) {
+  return Object.assign({}, row, { children: !!row.children });
+}
+
 function getJsTreeRoots() {
   const sql = `
     select id, text, exists (
@@ -90,7 +96,7 @@ function getJsTreeRoots() {
     order by weight
   `;
   const rows = db.prepare(sql).all();
-  return Promise.resolve(rows);
+  return Promise.resolve(rows.map(toJsTreeNode));
 }
 
 function getJsTreeChildren(parentId) {
@@ -103,7 +109,7 @@ function getJsTreeChildren(parentId) {
     order by weight
   `;
   const rows = db.prepare(sql).all(parentId);
-  return Promise.resolve(rows);
+  return Promise.resolve(rows.map(toJsTreeNode));
 }
 
 module.exports = {
