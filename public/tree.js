@@ -69,6 +69,20 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
   //fetch("/board?id="+id).then(d => d.json()).then(rows => {
 });
 
+// The contextmenu "Create" action makes a client-side node with a temporary id and
+// immediately opens the rename editor, so the folder is only persisted once we know its name.
+$("#jstree_div").on("rename_node.jstree", function(e, data) {
+  if (/^\d+$/.test(data.node.id)) return; // already has a database id, so it is not a freshly created node
+  var parent = data.node.parent === "#" ? null : data.node.parent;
+  $.post("/folder", { parent: parent, text: data.text }).done(function() {
+    if (parent) {
+      tree.jstree("refresh_node", parent);
+    } else {
+      tree.jstree("refresh");
+    }
+  });
+});
+
 $("#addNewFolderForm").submit(function(e) {
   e.preventDefault();
   var text = $("#addNewFolderInput").val().trim();
