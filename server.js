@@ -137,6 +137,6 @@ app.get("/jstree", (request, response) => {
   }).catch(fail(response));
 });
 
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(process.env.PORT||8000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
