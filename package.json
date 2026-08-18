@@ -12,13 +12,9 @@
     "express": "^4.17.3",
     "pg": "^8.7.3"
   },
-  "repository": {
-    "url": "https://glitch.com/edit/#!/treetext"
-  },
   "license": "private",
   "keywords": [
     "node",
-    "glitch",
     "express"
   ]
 }
