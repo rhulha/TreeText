@@ -71,7 +71,11 @@ function createFolder(parent, text) {
 }
 
 function updateFolder(text, weight, id) {
-  db.prepare('update todos set text = ?, weight = ? where id = ?').run(text, weight, id);
+  if (weight === undefined || weight === null || weight === '') {
+    db.prepare('update todos set text = ? where id = ?').run(text, id);
+  } else {
+    db.prepare('update todos set text = ?, weight = ? where id = ?').run(text, weight, id);
+  }
   return Promise.resolve();
 }
 

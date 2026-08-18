@@ -43,6 +43,9 @@ function createFolder(parent, text) {
 }
 
 function updateFolder(text, weight, id) {
+  if (weight === undefined || weight === null || weight === '') {
+    return client.query('update todos set text = $1 where id = $2', [text, id]);
+  }
   return client.query('update todos set text = $1, weight = $2 where id = $3', [text, weight, id]);
 }
 

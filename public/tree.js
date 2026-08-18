@@ -72,7 +72,10 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
 // The contextmenu "Create" action makes a client-side node with a temporary id and
 // immediately opens the rename editor, so the folder is only persisted once we know its name.
 $("#jstree_div").on("rename_node.jstree", function(e, data) {
-  if (/^\d+$/.test(data.node.id)) return; // already has a database id, so it is not a freshly created node
+  if (/^\d+$/.test(data.node.id)) { // already has a database id, so this is a rename of an existing folder
+    $.ajax({ url: "/folder", type: "PUT", data: { folder: data.node.id, text: data.text } });
+    return;
+  }
   var parent = data.node.parent === "#" ? null : data.node.parent;
   $.post("/folder", { parent: parent, text: data.text }).done(function() {
     if (parent) {
