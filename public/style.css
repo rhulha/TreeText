@@ -251,6 +251,7 @@ div.todo.selected .todo-grip {
 #detailsTitle {
   color: white;
   margin: 0 0 12px 0;
+  padding-right: 70px; /* keep clear of the fixed Logout button */
   font-size: 15px;
   word-break: break-word;
 }

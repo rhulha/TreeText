@@ -27,8 +27,6 @@ export function renderTodoItem(node) {
   });
 
   $todo.click(function() {
-    $("#todoId").val($todo.attr("id"));
-    $("#todoText").val($text.text());
     $(".todo.selected").removeClass("selected");
     $todo.addClass("selected");
     selectTodo($todo.attr("id").substring(5), $text.text());
@@ -172,38 +170,4 @@ $("#addNewTodoForm").submit(function(event) {
     $("#list").prepend(newTodo);
     $('#addNewTodoInput').val("");
   });
-});
-
-$("#todoDelete").click(function(event) {
-  event.preventDefault();
-  $.ajax({
-      url: 'todo',
-      type: 'DELETE',
-      data: {id: $('#todoId').val() },
-      success: function(result) {
-        $('#' + $('#todoId').val() ).remove();
-      }
-  });
-});
-
-let todoUpdate = function(event) {
-  console.log("folder", window.selectedFolder);
-  event.preventDefault();
-  $.ajax({
-      url: 'todo',
-      type: 'PUT',
-      //contentType: 'application/json',
-      data: {parent: window.selectedFolder, id: $('#todoId').val(), text: $('#todoText').val() },
-      success: function(result) {
-        $('#' + $('#todoId').val() ).find('.todo-text').text($('#todoText').val());
-      }
-  });
-}
-
-$("#editTodo").submit(todoUpdate);
-
-$("#editTodo").on('keydown', function(e) {
-  if(e.keyCode == 13) {
-    todoUpdate(e);
-  }
 });
