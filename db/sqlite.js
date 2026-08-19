@@ -64,6 +64,26 @@ function createTodo(parent, text) {
   return Promise.resolve({ id: info.lastInsertRowid });
 }
 
+// One transaction for the whole tree: a half inserted import would have to be untangled
+// by hand, and children are useless without the parent that carries their id.
+function importNodes(parentId, nodes) {
+  const insert = db.prepare(
+    'insert into todos (parent, weight, text, folder, notes, starred, completed) values (?, ?, ?, ?, ?, ?, ?)'
+  );
+  const counts = { folders: 0, todos: 0 };
+
+  function insertNode(parent, node, weight) {
+    const folder = node.folder ? 1 : 0;
+    const info = insert.run(parent, weight, node.text || '', folder, node.notes || null,
+      node.starred ? 1 : 0, node.completed || null);
+    counts[folder ? 'folders' : 'todos'] += 1;
+    (node.children || []).forEach((child, i) => insertNode(info.lastInsertRowid, child, i));
+  }
+
+  db.transaction(() => nodes.forEach((node, i) => insertNode(parentId, node, i)))();
+  return Promise.resolve(counts);
+}
+
 function updateTodo(id, parent, text) {
   db.prepare('update todos set parent=?, weight=?, text=? where id = ?').run(parent, 1, text, id);
   return Promise.resolve();
@@ -172,6 +192,7 @@ module.exports = {
   setTodoCompleted,
   setTodoStarred,
   createTodo,
+  importNodes,
   updateTodo,
   deleteTodo,
   deleteFolder,

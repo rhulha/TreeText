@@ -43,6 +43,42 @@ function createTodo(parent, text) {
     .then((res) => res.rows[0]);
 }
 
+// One transaction for the whole tree: a half inserted import would have to be untangled
+// by hand, and children are useless without the parent that carries their id.
+async function importNodes(parentId, nodes) {
+  const sql =
+    'insert into todos (parent, weight, text, folder, notes, starred, completed) ' +
+    'values ($1, $2, $3, $4, $5, $6, $7) returning id';
+  const counts = { folders: 0, todos: 0 };
+  const c = await pool.connect();
+
+  async function insertNode(parent, node, weight) {
+    const folder = !!node.folder;
+    const res = await c.query(sql, [parent, weight, node.text || '', folder, node.notes || null,
+      !!node.starred, node.completed || null]);
+    counts[folder ? 'folders' : 'todos'] += 1;
+    const children = node.children || [];
+    for (let i = 0; i < children.length; i += 1) {
+      await insertNode(res.rows[0].id, children[i], i);
+    }
+  }
+
+  try {
+    await c.query('begin');
+    for (let i = 0; i < nodes.length; i += 1) {
+      await insertNode(parentId, nodes[i], i);
+    }
+    await c.query('commit');
+  } catch (err) {
+    await c.query('rollback');
+    throw err;
+  } finally {
+    c.release();
+  }
+
+  return counts;
+}
+
 function updateTodo(id, parent, text) {
   return pool.query('update todos set parent=$2, weight=$3, text=$4 where id = $1', [id, parent, 1, text]);
 }
@@ -140,6 +176,7 @@ module.exports = {
   setTodoCompleted,
   setTodoStarred,
   createTodo,
+  importNodes,
   updateTodo,
   deleteTodo,
   deleteFolder,

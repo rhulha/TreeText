@@ -9,6 +9,7 @@ db.connect().catch((err) => {
 var express = require('express');
 var app = express();
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' })); // an exported todo tree does not fit in the 100kb default
 
 app.use(express.static('lib'));
 app.use(express.static('public'));
@@ -139,6 +140,17 @@ app.put('/folder/:id/move', function (request, response) {
   var siblings = [].concat(request.body.siblings || []).filter((id) => /^\d+$/.test(id));
   db.moveFolder(request.params.id, request.body.parent || null, siblings).then(() => {
     response.send("ok");
+  }).catch(fail(response));
+});
+
+app.post('/import/:parent', function (request, response) {
+  var nodes = request.body.nodes;
+  if (!Array.isArray(nodes)) {
+    return response.status(400).json({ error: 'expected a nodes array' });
+  }
+  db.importNodes(request.params.parent, nodes).then((counts) => {
+    console.log('imported into ' + request.params.parent, counts);
+    response.json(counts);
   }).catch(fail(response));
 });
 

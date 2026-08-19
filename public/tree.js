@@ -1,5 +1,6 @@
 import { renderTodoItem } from "./todo.js";
 import { clearSelection } from "./details.js";
+import { msTodoToNodes } from "./import.js";
 
 function treeChangeCallback(operation, node, node_parent, node_position, more) {
   // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
@@ -99,6 +100,57 @@ $("#jstree_div").on("move_node.jstree", function(e, data) {
       console.error("Error moving folder:", error);
     }
   });
+});
+
+function setImportStatus(text) {
+  $("#importStatus").text(text);
+}
+
+$("#importButton").click(function() {
+  $("#importFile").click();
+});
+
+$("#importFile").change(function() {
+  var file = this.files[0];
+  this.value = ""; // otherwise picking the same file again fires no change event
+  if (!file) return;
+
+  var folder = window.selectedFolder;
+  if (!folder) {
+    setImportStatus("Select a folder to import into first.");
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function() {
+    var nodes;
+    try {
+      nodes = msTodoToNodes(JSON.parse(reader.result));
+    } catch (err) {
+      setImportStatus("Could not read that file: " + err.message);
+      return;
+    }
+    setImportStatus("Importing " + nodes.length + " lists...");
+    $.ajax({
+      url: "/import/" + folder,
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ nodes: nodes }),
+      success: function(counts) {
+        setImportStatus("Imported " + counts.folders + " lists and " + counts.todos + " items.");
+        // refresh_node reloads the children asynchronously, so the imported lists can only
+        // be shown once it reports back.
+        $("#jstree_div").one("refresh_node.jstree", function() {
+          tree.jstree("open_node", folder);
+        });
+        tree.jstree("refresh_node", folder);
+      },
+      error: function(xhr) {
+        setImportStatus("Import failed: " + xhr.status + " " + xhr.statusText);
+      }
+    });
+  };
+  reader.readAsText(file);
 });
 
 $("#addNewFolderForm").submit(function(e) {

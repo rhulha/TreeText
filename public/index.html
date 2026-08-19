@@ -20,6 +20,11 @@
     <form id="addNewFolderForm">
       <input type="text" id="addNewFolderInput" name="addNewFolderInput" style="width: 100%; height:40px" placeholder="New Folder...">
     </form>
+    <div id="importRow">
+      <button type="button" id="importButton">Import JSON</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+    </div>
+    <div id="importStatus"></div>
     <div id="jstree_div"></div>
   </div>
   

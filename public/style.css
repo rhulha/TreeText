@@ -57,6 +57,31 @@ body {
   float: left;
 }
 
+#importRow {
+  margin-top: 6px;
+}
+
+#importButton {
+  width: 100%;
+  background: rgb(37, 36, 36);
+  border: none;
+  color: white;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+#importButton:hover {
+  background: rgba(255, 255, 255, .1);
+}
+
+#importStatus:not(:empty) {
+  color: rgba(255, 255, 255, .6);
+  font-size: 12px;
+  padding: 6px 2px;
+  word-break: break-word;
+}
+
 #addNewTodoInput,
 #addNewFolderInput {
   background: rgb(37, 36, 36);
@@ -104,8 +129,14 @@ div.todo {
   box-shadow: inset 0 0 0 1px #3ea8a8;
 }
 
-.todo-check,
-.subitem-check {
+/* bootstrap ships [type=file]{display:block} and input[type=checkbox]{margin:4px 0 0},
+   both of which outrank a plain class selector, hence the input prefix and the id. */
+#importFile {
+  display: none;
+}
+
+input.todo-check,
+input.subitem-check {
   flex: none;
   margin: 0 8px 0 0;
   cursor: pointer;
