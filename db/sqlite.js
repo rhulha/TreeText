@@ -43,8 +43,20 @@ function updateTodoNotes(id, notes) {
 }
 
 function getTodos(parentId) {
-  const rows = db.prepare('SELECT id, weight, text FROM todos where parent = ? and folder = 0').all(parentId);
+  const rows = db.prepare('SELECT id, weight, text, starred, completed FROM todos where parent = ? and folder = 0').all(parentId);
   return Promise.resolve(rows);
+}
+
+// sqlite has no boolean type, so starred is stored as 0/1, and completed keeps the
+// moment it was ticked rather than a flag, which is what the column was designed for.
+function setTodoCompleted(id, completed) {
+  db.prepare('update todos set completed = ? where id = ?').run(completed ? new Date().toISOString() : null, id);
+  return Promise.resolve();
+}
+
+function setTodoStarred(id, starred) {
+  db.prepare('update todos set starred = ? where id = ?').run(starred ? 1 : 0, id);
+  return Promise.resolve();
 }
 
 function createTodo(parent, text) {
@@ -157,6 +169,8 @@ module.exports = {
   getTodos,
   getTodo,
   updateTodoNotes,
+  setTodoCompleted,
+  setTodoStarred,
   createTodo,
   updateTodo,
   deleteTodo,

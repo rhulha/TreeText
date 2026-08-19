@@ -30,6 +30,8 @@ function addNode(parent, rows) {
     node.id = rows[rows.i].id;
     node.text = rows[rows.i].text;
     node.weight = rows[rows.i].weight;
+    node.starred = rows[rows.i].starred;
+    node.completed = rows[rows.i].completed;
     node.nodes = [];
     parent.nodes.push(node);
     rows.i++;
@@ -57,6 +59,18 @@ app.get('/todo/:id', function (request, response) {
 
 app.put('/todo/:id/notes', function (request, response) {
   db.updateTodoNotes(request.params.id, request.body.notes).then(() => {
+    response.send("ok");
+  }).catch(fail(response));
+});
+
+app.put('/todo/:id/completed', function (request, response) {
+  db.setTodoCompleted(request.params.id, request.body.completed === 'true').then(() => {
+    response.send("ok");
+  }).catch(fail(response));
+});
+
+app.put('/todo/:id/starred', function (request, response) {
+  db.setTodoStarred(request.params.id, request.body.starred === 'true').then(() => {
     response.send("ok");
   }).catch(fail(response));
 });

@@ -3,14 +3,19 @@ import { selectTodo, setSelectedTitle, clearSelection, isSelected } from "./deta
 export function renderTodoItem(node) {
   var $todo = $("<div class='todo'></div>").attr("id", "node-" + node.id);
   var $grip = $("<span class='todo-grip' draggable='true' title='Drag to a folder'>⠿</span>");
+  var $check = $("<input type='checkbox' class='todo-check'>").prop("checked", !!node.completed);
   var $text = $("<span class='todo-text'></span>").text(node.text);
+  var $star = $("<button type='button' class='todo-star' title='Star'></button>");
   var $menuBtn = $("<button type='button' class='todo-menu-btn'>&#8942;</button>");
   var $menu = $("<div class='todo-menu'></div>");
   var $rename = $("<div class='todo-menu-item'>Rename</div>");
   var $delete = $("<div class='todo-menu-item'>Delete</div>");
 
+  $todo.toggleClass("completed", !!node.completed);
+  setStar($star, !!node.starred);
+
   $menu.append($rename, $delete);
-  $todo.append($grip, $text, $menuBtn);
+  $todo.append($grip, $check, $text, $star, $menuBtn);
   $todo.data("menu", $menu);
   $("body").append($menu);
 
@@ -30,6 +35,20 @@ export function renderTodoItem(node) {
     $(".todo.selected").removeClass("selected");
     $todo.addClass("selected");
     selectTodo($todo.attr("id").substring(5), $text.text());
+  });
+
+  $check.click(function(e) {
+    e.stopPropagation();
+    var completed = $check.prop("checked");
+    $todo.toggleClass("completed", completed);
+    $.ajax({ url: "todo/" + node.id + "/completed", type: "PUT", data: { completed: completed } });
+  });
+
+  $star.click(function(e) {
+    e.stopPropagation();
+    var starred = !$star.hasClass("starred");
+    setStar($star, starred);
+    $.ajax({ url: "todo/" + node.id + "/starred", type: "PUT", data: { starred: starred } });
   });
 
   $menuBtn.click(function(e) {
@@ -59,6 +78,10 @@ export function renderTodoItem(node) {
   });
 
   return $todo;
+}
+
+function setStar($star, starred) {
+  $star.toggleClass("starred", starred).html(starred ? "★" : "☆");
 }
 
 function closeAllMenus() {

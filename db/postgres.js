@@ -23,8 +23,18 @@ function updateTodoNotes(id, notes) {
 
 function getTodos(parentId) {
   return pool
-    .query('SELECT id, weight, text FROM todos where parent = $1 and folder = false', [parentId])
+    .query('SELECT id, weight, text, starred, completed FROM todos where parent = $1 and folder = false', [parentId])
     .then((res) => res.rows);
+}
+
+// completed keeps the moment it was ticked rather than a flag, which is what the column
+// was designed for.
+function setTodoCompleted(id, completed) {
+  return pool.query('update todos set completed = $2 where id = $1', [id, completed ? new Date() : null]);
+}
+
+function setTodoStarred(id, starred) {
+  return pool.query('update todos set starred = $2 where id = $1', [id, !!starred]);
 }
 
 function createTodo(parent, text) {
@@ -127,6 +137,8 @@ module.exports = {
   getTodos,
   getTodo,
   updateTodoNotes,
+  setTodoCompleted,
+  setTodoStarred,
   createTodo,
   updateTodo,
   deleteTodo,

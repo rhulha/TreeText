@@ -35,9 +35,16 @@ export function isSelected(id) {
 }
 
 function renderSubitem(node) {
-  var $item = $("<div class='subitem'></div>");
+  var $item = $("<div class='subitem'></div>").toggleClass("completed", !!node.completed);
+  var $check = $("<input type='checkbox' class='subitem-check'>").prop("checked", !!node.completed);
   var $text = $("<span class='subitem-text'></span>").text(node.text);
   var $delete = $("<button type='button' class='subitem-delete' title='Delete'>&times;</button>");
+
+  $check.click(function() {
+    var completed = $check.prop("checked");
+    $item.toggleClass("completed", completed);
+    $.ajax({ url: "todo/" + node.id + "/completed", type: "PUT", data: { completed: completed } });
+  });
 
   $delete.click(function() {
     $.ajax({
@@ -49,7 +56,7 @@ function renderSubitem(node) {
     });
   });
 
-  return $item.append($text, $delete);
+  return $item.append($check, $text, $delete);
 }
 
 $("#addSubitemForm").submit(function(event) {
