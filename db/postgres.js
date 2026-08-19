@@ -79,6 +79,14 @@ async function importNodes(parentId, nodes) {
   return counts;
 }
 
+// The whole table in one go: the export builds the tree in the server, the same way the
+// jstree and todo list endpoints do.
+function getAllTodos() {
+  return pool
+    .query('SELECT id, parent, folder, weight, text, notes, starred, completed FROM todos')
+    .then((res) => res.rows);
+}
+
 function updateTodo(id, parent, text) {
   return pool.query('update todos set parent=$2, weight=$3, text=$4 where id = $1', [id, parent, 1, text]);
 }
@@ -190,6 +198,7 @@ module.exports = {
   setTodoStarred,
   createTodo,
   importNodes,
+  getAllTodos,
   updateTodo,
   deleteTodo,
   deleteFolder,

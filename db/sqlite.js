@@ -84,6 +84,15 @@ function importNodes(parentId, nodes) {
   return Promise.resolve(counts);
 }
 
+// The whole table in one go: the export builds the tree in the server, the same way the
+// jstree and todo list endpoints do.
+function getAllTodos() {
+  const rows = db.prepare(
+    'SELECT id, parent, folder, weight, text, notes, starred, completed FROM todos'
+  ).all();
+  return Promise.resolve(rows);
+}
+
 function updateTodo(id, parent, text) {
   db.prepare('update todos set parent=?, weight=?, text=? where id = ?').run(parent, 1, text, id);
   return Promise.resolve();
@@ -207,6 +216,7 @@ module.exports = {
   setTodoStarred,
   createTodo,
   importNodes,
+  getAllTodos,
   updateTodo,
   deleteTodo,
   deleteFolder,

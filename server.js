@@ -161,6 +161,33 @@ app.post('/import/:parent', function (request, response) {
   }).catch(fail(response));
 });
 
+// The export is written in the shape POST /import accepts, so a file can be read back in
+// without a converter. Ids are left out on purpose: an import always creates new rows.
+function exportNode(row, byParent) {
+  var node = { text: row.text || '' };
+  if (row.folder) node.folder = true;
+  if (row.notes) node.notes = row.notes;
+  if (row.starred) node.starred = true;
+  if (row.completed) node.completed = row.completed;
+  var children = byParent.get(row.id) || [];
+  if (children.length) node.children = children.map((child) => exportNode(child, byParent));
+  return node;
+}
+
+app.get('/export', function (request, response) {
+  db.getAllTodos().then((rows) => {
+    var byParent = new Map();
+    rows.forEach((row) => {
+      var siblings = byParent.get(row.parent);
+      if (!siblings) byParent.set(row.parent, siblings = []);
+      siblings.push(row);
+    });
+    byParent.forEach((siblings) => siblings.sort((a, b) => (a.weight - b.weight) || (a.id - b.id)));
+    var roots = byParent.get(null) || [];
+    response.json({ nodes: roots.map((row) => exportNode(row, byParent)) });
+  }).catch(fail(response));
+});
+
 app.get("/jstree", (request, response) => {
   console.log("get ", request.url);
   var parent = request.query.id;

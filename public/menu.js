@@ -29,3 +29,18 @@ ga("deleteCompletedButton", "click", () => {
     }
   });
 });
+
+ga("exportButton", "click", () => {
+  $("menuStatus").textContent = "Exporting...";
+  jQuery.getJSON("export", (data) => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data.nodes, null, 2)], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "treetext-" + new Date().toISOString().slice(0, 10) + ".json";
+    link.click();
+    URL.revokeObjectURL(url);
+    $("menuStatus").textContent = "Exported " + data.nodes.length + " root folders.";
+  }).fail((xhr) => {
+    $("menuStatus").textContent = "Export failed: " + xhr.status + " " + xhr.statusText;
+  });
+});

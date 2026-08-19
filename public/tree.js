@@ -110,6 +110,14 @@ $("#importButton").click(function() {
   $("#importFile").click();
 });
 
+// A file straight out of the Export JSON button is already in the shape /import wants,
+// while a Microsoft To Do export names its lists displayName and has to be converted.
+function toNodes(data) {
+  if (Array.isArray(data) && data.length && data[0].displayName) return msTodoToNodes(data);
+  if (!Array.isArray(data)) throw new Error("expected an array of nodes");
+  return data;
+}
+
 $("#importFile").change(function() {
   var file = this.files[0];
   this.value = ""; // otherwise picking the same file again fires no change event
@@ -125,7 +133,7 @@ $("#importFile").change(function() {
   reader.onload = function() {
     var nodes;
     try {
-      nodes = msTodoToNodes(JSON.parse(reader.result));
+      nodes = toNodes(JSON.parse(reader.result));
     } catch (err) {
       setImportStatus("Could not read that file: " + err.message);
       return;
