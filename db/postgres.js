@@ -105,6 +105,19 @@ function deleteFolder(id) {
   return deleteSubtree(id, true);
 }
 
+// Same reasoning as deleteSubtree: a ticked off todo takes its subitems with it.
+function deleteCompletedTodos() {
+  const sql = `
+    WITH RECURSIVE descendants(id) AS (
+      SELECT id FROM todos WHERE folder = false AND completed IS NOT NULL
+      UNION ALL
+      SELECT t.id FROM todos t INNER JOIN descendants d ON t.parent = d.id
+    )
+    DELETE FROM todos WHERE id IN (SELECT id FROM descendants)
+  `;
+  return pool.query(sql).then((res) => ({ deleted: res.rowCount }));
+}
+
 function getFolderTree() {
   const sql =
     'WITH RECURSIVE rec AS ( SELECT id, parent, weight, array[weight, id] AS path, text FROM todos where parent is null UNION ' +
@@ -180,6 +193,7 @@ module.exports = {
   updateTodo,
   deleteTodo,
   deleteFolder,
+  deleteCompletedTodos,
   getFolderTree,
   createFolder,
   updateFolder,

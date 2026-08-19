@@ -57,29 +57,73 @@ body {
   float: left;
 }
 
-#importRow {
-  margin-top: 6px;
+#menubar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding-right: 80px; /* keep clear of the fixed Logout button */
 }
 
-#importButton {
-  width: 100%;
+#panes {
+  height: calc(100% - 48px);
+}
+
+.menu-btn {
   background: rgb(37, 36, 36);
   border: none;
   color: white;
   border-radius: 4px;
-  padding: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
   cursor: pointer;
 }
 
-#importButton:hover {
+.menu-btn:hover {
   background: rgba(255, 255, 255, .1);
 }
 
-#importStatus:not(:empty) {
+#menuStatus:not(:empty) {
   color: rgba(255, 255, 255, .6);
   font-size: 12px;
-  padding: 6px 2px;
+  margin-left: 6px;
   word-break: break-word;
+}
+
+#aboutOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 3000;
+}
+
+#aboutOverlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#aboutDialog {
+  background: rgb(50, 49, 49);
+  color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .5);
+  padding: 20px 24px;
+  min-width: 260px;
+  text-align: center;
+}
+
+#aboutDialog h4 {
+  margin: 0 0 8px 0;
+}
+
+#aboutDialog p {
+  color: rgba(255, 255, 255, .7);
+  font-size: 13px;
 }
 
 #addNewTodoInput,

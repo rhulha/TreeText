@@ -103,7 +103,7 @@ $("#jstree_div").on("move_node.jstree", function(e, data) {
 });
 
 function setImportStatus(text) {
-  $("#importStatus").text(text);
+  $("#menuStatus").text(text);
 }
 
 $("#importButton").click(function() {

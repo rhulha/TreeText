@@ -95,6 +95,13 @@ app.put('/todo', function (request, response) {
   }).catch(fail(response));
 });
 
+app.delete('/todos/completed', function (request, response) {
+  db.deleteCompletedTodos().then((counts) => {
+    console.log('deleted completed todos', counts);
+    response.json(counts);
+  }).catch(fail(response));
+});
+
 app.delete('/todo/:id', function (request, response) {
   console.log('delete todo for id: ' + request.params.id);
   var id = request.params.id;

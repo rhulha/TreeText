@@ -15,16 +15,22 @@
 
   <a id="logoutButton" href="https://auth.hulha.net/logout">Logout</a>
 
+  <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX MENU XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+  <div id="menubar">
+    <button type="button" id="importButton" class="menu-btn">Import JSON</button>
+    <button type="button" id="exportButton" class="menu-btn">Export JSON</button>
+    <button type="button" id="deleteCompletedButton" class="menu-btn">Delete Completed</button>
+    <button type="button" id="aboutButton" class="menu-btn">About</button>
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <span id="menuStatus"></span>
+  </div>
+
+  <div id="panes">
   <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX LEFT XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
   <div id="mytree" class="split split-horizontal content">
     <form id="addNewFolderForm">
       <input type="text" id="addNewFolderInput" name="addNewFolderInput" style="width: 100%; height:40px" placeholder="New Folder...">
     </form>
-    <div id="importRow">
-      <button type="button" id="importButton">Import JSON</button>
-      <input type="file" id="importFile" accept=".json,application/json" hidden>
-    </div>
-    <div id="importStatus"></div>
     <div id="jstree_div"></div>
   </div>
   
@@ -61,7 +67,16 @@
       </div>
     </div>
   </div>
-  
+  </div>
+
+  <div id="aboutOverlay">
+    <div id="aboutDialog">
+      <h4>TreeText</h4>
+      <p>A tree based todo list.</p>
+      <button type="button" id="aboutCloseButton" class="menu-btn">Close</button>
+    </div>
+  </div>
+
   <script>
     Split(['#mytree', '#mylist', '#mydetails'], {
       sizes: [10, 75, 15],
@@ -70,6 +85,7 @@
     })
   </script>
   
+  <script type="module" src="menu.js"></script>
   <script type="module" src="tree.js"></script>
   <script type="module" src="todo.js"></script>
 
