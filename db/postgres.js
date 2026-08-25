@@ -21,10 +21,17 @@ function updateTodoNotes(id, notes) {
   return pool.query('update todos set notes = $2 where id = $1', [id, notes]);
 }
 
+// sub_done/sub_total drive the "1 of 3" line under a todo, the way Microsoft To Do
+// counts the subitems of a task.
 function getTodos(parentId) {
-  return pool
-    .query('SELECT id, weight, text, starred, completed FROM todos where parent = $1 and folder = false', [parentId])
-    .then((res) => res.rows);
+  const sql = `
+    SELECT id, weight, text, starred, completed,
+      (select count(*) from todos sub where sub.parent = todos.id and sub.folder = false) as sub_total,
+      (select count(*) from todos sub where sub.parent = todos.id and sub.folder = false
+        and sub.completed is not null) as sub_done
+    FROM todos where parent = $1 and folder = false
+  `;
+  return pool.query(sql, [parentId]).then((res) => res.rows);
 }
 
 // completed keeps the moment it was ticked rather than a flag, which is what the column

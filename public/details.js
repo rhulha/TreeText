@@ -1,4 +1,11 @@
+import { setSubCount } from "./todo.js";
+
 let selectedTodoId = null;
+
+function syncSubCount() {
+  var $items = $("#subitemList .subitem");
+  setSubCount(selectedTodoId, $items.filter(".completed").length, $items.length);
+}
 
 export function selectTodo(id, text) {
   selectedTodoId = id;
@@ -43,6 +50,7 @@ function renderSubitem(node) {
   $check.click(function() {
     var completed = $check.prop("checked");
     $item.toggleClass("completed", completed);
+    syncSubCount();
     $.ajax({ url: "todo/" + node.id + "/completed", type: "PUT", data: { completed: completed } });
   });
 
@@ -52,6 +60,7 @@ function renderSubitem(node) {
       type: "DELETE",
       success: function() {
         $item.remove();
+        syncSubCount();
       }
     });
   });
@@ -68,6 +77,7 @@ $("#addSubitemForm").submit(function(event) {
   $.post("todo", { parent: parent, text: text }).done(function(data) {
     if (selectedTodoId !== parent) return;
     $("#subitemList").append(renderSubitem({ id: data.id, text: text }));
+    syncSubCount();
     $("#addSubitemInput").val("");
   });
 });

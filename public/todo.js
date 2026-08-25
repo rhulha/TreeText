@@ -14,8 +14,11 @@ export function renderTodoItem(node) {
   $todo.toggleClass("completed", !!node.completed);
   setStar($star, !!node.starred);
 
+  var $body = $("<div class='todo-body'></div>").append($text);
+  if (node.sub_total) $body.append(subCountSpan(node.sub_done, node.sub_total));
+
   $menu.append($rename, $delete);
-  $todo.append($grip, $check, $text, $star, $menuBtn);
+  $todo.append($grip, $check, $body, $star, $menuBtn);
   $todo.data("menu", $menu);
   $("body").append($menu);
 
@@ -78,6 +81,25 @@ export function renderTodoItem(node) {
   });
 
   return $todo;
+}
+
+function subCountSpan(done, total) {
+  return $("<span class='todo-sub-count'></span>").text(done + " of " + total);
+}
+
+// The details pane adds, ticks off and deletes subitems, so the count under the todo in
+// the middle list has to follow along without reloading the folder.
+export function setSubCount(id, done, total) {
+  var $body = $("#node-" + id + " .todo-body");
+  if (!$body.length) return;
+  var $count = $body.find(".todo-sub-count");
+  if (!total) {
+    $count.remove();
+  } else if ($count.length) {
+    $count.text(done + " of " + total);
+  } else {
+    $body.append(subCountSpan(done, total));
+  }
 }
 
 function setStar($star, starred) {

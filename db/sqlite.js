@@ -42,8 +42,17 @@ function updateTodoNotes(id, notes) {
   return Promise.resolve();
 }
 
+// sub_done/sub_total drive the "1 of 3" line under a todo, the way Microsoft To Do
+// counts the subitems of a task.
 function getTodos(parentId) {
-  const rows = db.prepare('SELECT id, weight, text, starred, completed FROM todos where parent = ? and folder = 0').all(parentId);
+  const sql = `
+    SELECT id, weight, text, starred, completed,
+      (select count(*) from todos sub where sub.parent = todos.id and sub.folder = 0) as sub_total,
+      (select count(*) from todos sub where sub.parent = todos.id and sub.folder = 0
+        and sub.completed is not null) as sub_done
+    FROM todos where parent = ? and folder = 0
+  `;
+  const rows = db.prepare(sql).all(parentId);
   return Promise.resolve(rows);
 }
 

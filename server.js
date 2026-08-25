@@ -33,6 +33,8 @@ function addNode(parent, rows) {
     node.weight = rows[rows.i].weight;
     node.starred = rows[rows.i].starred;
     node.completed = rows[rows.i].completed;
+    node.sub_total = Number(rows[rows.i].sub_total) || 0; // postgres counts come back as strings
+    node.sub_done = Number(rows[rows.i].sub_done) || 0;
     node.nodes = [];
     parent.nodes.push(node);
     rows.i++;
