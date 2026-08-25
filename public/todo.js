@@ -178,6 +178,16 @@ $("#jstree_div").on("drop", ".jstree-anchor", function(e) {
   }
 });
 
+$(document).on("keydown", function(e) {
+  if (e.keyCode !== 113) return; // F2
+  if ($(e.target).is("input, textarea")) return;
+  var $todo = $(".todo.selected");
+  var $text = $todo.find(".todo-text");
+  if (!$text.length) return; // nothing selected, or a rename is already open
+  e.preventDefault();
+  startRename($todo, $text);
+});
+
 $(document).click(closeAllMenus);
 $(window).on("resize", closeAllMenus);
 document.addEventListener("scroll", closeAllMenus, true); // capture: scroll doesn't bubble, and #list is re-created dynamically
