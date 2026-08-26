@@ -266,6 +266,25 @@ div.todo.selected .todo-grip {
   opacity: .5;
 }
 
+/* The count sits at the right edge of the row, so the anchor has to span the pane. The
+   open/close arrow is an inline-block sibling of the anchor, so this has to stay
+   inline-flex: a block level flex box would drop onto its own line and push the arrow
+   above the folder. */
+.jstree-default .jstree-anchor {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+  width: calc(100% - 28px);
+}
+
+.jstree-default .jstree-anchor[data-count]::after {
+  content: attr(data-count);
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
 .jstree-default .jstree-anchor.todo-drop-target {
   background: var(--accent-soft);
   box-shadow: inset 0 0 0 1px var(--accent);

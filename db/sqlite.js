@@ -185,8 +185,16 @@ function updateFolder(text, weight, id) {
 
 // sqlite has no boolean type, so `exists(...)` comes back as 0/1. jstree only draws the
 // open/close arrow for a lazily loaded node when children is strictly === true.
+// The open todo count rides along as a data attribute on the anchor, which style.css
+// draws at the right hand edge; keeping it out of text leaves renaming untouched.
 function toJsTreeNode(row) {
-  return Object.assign({}, row, { children: !!row.children });
+  return {
+    id: row.id,
+    text: row.text,
+    type: row.type,
+    children: !!row.children,
+    a_attr: row.open_todos ? { "data-count": row.open_todos } : {}
+  };
 }
 
 function getJsTreeRoots() {
@@ -194,6 +202,8 @@ function getJsTreeRoots() {
     select id, text, exists (
       select 1 from todos as children where children.parent = todos.id and folder = 1
     ) as children,
+    (select count(*) from todos as open where open.parent = todos.id and open.folder = 0
+      and open.completed is null) as open_todos,
     'root' as type
     from todos
     where folder = 1 and parent is null
@@ -207,7 +217,9 @@ function getJsTreeChildren(parentId) {
   const sql = `
     select id, text, exists (
       select 1 from todos as children where children.parent = todos.id and folder = 1
-    ) as children
+    ) as children,
+    (select count(*) from todos as open where open.parent = todos.id and open.folder = 0
+      and open.completed is null) as open_todos
     from todos
     where folder = 1 and parent = ?
     order by weight

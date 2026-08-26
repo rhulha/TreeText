@@ -1,4 +1,5 @@
 import { selectTodo, setSelectedTitle, clearSelection, isSelected } from "./details.js";
+import { adjustFolderCount } from "./tree.js";
 
 export function renderTodoItem(node) {
   var $todo = $("<div class='todo'></div>").attr("id", "node-" + node.id);
@@ -44,6 +45,7 @@ export function renderTodoItem(node) {
     e.stopPropagation();
     var completed = $check.prop("checked");
     $todo.toggleClass("completed", completed);
+    adjustFolderCount(window.selectedFolder, completed ? -1 : 1);
     $.ajax({ url: "todo/" + node.id + "/completed", type: "PUT", data: { completed: completed } });
   });
 
@@ -151,10 +153,12 @@ function startRename($todo, $text) {
 }
 
 function deleteTodoItem($todo, $menu) {
+  var wasOpen = !$todo.hasClass("completed");
   $.ajax({
     url: "todo/" + $todo.attr("id").substring(5),
     type: "DELETE",
     success: function() {
+      if (wasOpen) adjustFolderCount(window.selectedFolder, -1);
       if (isSelected($todo.attr("id").substring(5))) {
         clearSelection();
       }
@@ -166,11 +170,16 @@ function deleteTodoItem($todo, $menu) {
 
 function moveTodoToFolder(todoId, folderId) {
   var $todo = $("#" + todoId);
+  var wasOpen = !$todo.hasClass("completed");
   $.ajax({
     url: "todo",
     type: "PUT",
     data: { parent: folderId, id: todoId, text: $todo.find(".todo-text").text() },
     success: function() {
+      if (wasOpen) {
+        adjustFolderCount(window.selectedFolder, -1);
+        adjustFolderCount(folderId, 1);
+      }
       if (isSelected(todoId.substring(5))) {
         clearSelection();
       }
@@ -223,6 +232,7 @@ $("#addNewTodoForm").submit(function(event) {
     console.log("after add new todo, data: ", data);
     var newTodo = renderTodoItem({ id: data.id, text: text });
     $("#list").prepend(newTodo);
+    adjustFolderCount(window.selectedFolder, 1);
     $('#addNewTodoInput').val("");
   });
 });

@@ -171,29 +171,47 @@ function updateFolder(text, weight, id) {
   return pool.query('update todos set text = $1, weight = $2 where id = $3', [text, weight, id]);
 }
 
+// The open todo count rides along as a data attribute on the anchor, which style.css
+// draws at the right hand edge; keeping it out of text leaves renaming untouched.
+// postgres returns count(*) as a string, hence the Number().
+function toJsTreeNode(row) {
+  const open = Number(row.open_todos) || 0;
+  return {
+    id: row.id,
+    text: row.text,
+    type: row.type,
+    children: !!row.children,
+    a_attr: open ? { "data-count": open } : {}
+  };
+}
+
 function getJsTreeRoots() {
   const sql = `
     select id, text, exists (
       select 1 from todos as children where children.parent = todos.id and folder = true
     ) as children,
+    (select count(*) from todos as open where open.parent = todos.id and open.folder = false
+      and open.completed is null) as open_todos,
     'root' as type
     from todos
     where folder = true and parent is null
     order by weight
   `;
-  return pool.query(sql).then((res) => res.rows);
+  return pool.query(sql).then((res) => res.rows.map(toJsTreeNode));
 }
 
 function getJsTreeChildren(parentId) {
   const sql = `
     select id, text, exists (
       select 1 from todos as children where children.parent = todos.id and folder = true
-    ) as children
+    ) as children,
+    (select count(*) from todos as open where open.parent = todos.id and open.folder = false
+      and open.completed is null) as open_todos
     from todos
     where folder = true and parent = $1
     order by weight
   `;
-  return pool.query(sql, [parentId]).then((res) => res.rows);
+  return pool.query(sql, [parentId]).then((res) => res.rows.map(toJsTreeNode));
 }
 
 module.exports = {

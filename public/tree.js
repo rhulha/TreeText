@@ -72,6 +72,7 @@ $("#jstree_div").on("changed.jstree", function(e, data) {
 // The contextmenu "Create" action makes a client-side node with a temporary id and
 // immediately opens the rename editor, so the folder is only persisted once we know its name.
 $("#jstree_div").on("rename_node.jstree", function(e, data) {
+  if (data.node.a_attr["data-count"]) tree.jstree(true).redraw_node(data.node, false, false, false);
   if (/^\d+$/.test(data.node.id)) { // already has a database id, so this is a rename of an existing folder
     $.ajax({ url: "/folder", type: "PUT", data: { folder: data.node.id, text: data.text } });
     return;
@@ -101,6 +102,23 @@ $("#jstree_div").on("move_node.jstree", function(e, data) {
     }
   });
 });
+
+// The folder count comes from the server with each lazily loaded jstree node, so ticking,
+// adding or deleting a todo has to move the number by hand until that node reloads. The
+// count is kept in the node model rather than on the element, because jstree redraws the
+// anchor from the model and would otherwise put the stale server number back.
+export function adjustFolderCount(folderId, delta) {
+  var instance = tree.jstree(true);
+  var node = folderId && instance.get_node(folderId);
+  if (!node) return;
+  var count = (Number(node.a_attr["data-count"]) || 0) + delta;
+  if (count > 0) {
+    node.a_attr["data-count"] = count;
+  } else {
+    delete node.a_attr["data-count"];
+  }
+  instance.redraw_node(node, false, false, false);
+}
 
 function setImportStatus(text) {
   $("#menuStatus").text(text);
