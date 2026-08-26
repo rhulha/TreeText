@@ -183,14 +183,9 @@ $("#addNewFolderForm").submit(function(e) {
   e.preventDefault();
   var text = $("#addNewFolderInput").val().trim();
   if (!text) return;
-  var parent = window.selectedFolder || null;
-  $.post("/folder", { parent: parent, text: text }).done(function() {
+  $.post("/folder", { parent: null, text: text }).done(function() {
     $("#addNewFolderInput").val("");
-    if (parent) {
-      tree.jstree("refresh_node", parent);
-    } else {
-      tree.jstree("refresh");
-    }
+    tree.jstree("refresh");
   });
 });
 
