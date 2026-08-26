@@ -2,6 +2,8 @@
 
 Tree-based todo and knowledge management app. Organize tasks in a hierarchical folder structure with a three-panel layout: folder tree on the left, todo list in the middle, and an edit/details panel on the right.
 
+![TreeText screenshot](demo.jpg)
+
 ## Tech Stack
 
 - **Backend:** Node.js, Express
